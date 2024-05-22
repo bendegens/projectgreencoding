@@ -38,7 +38,7 @@ jobs:
 
     - name: Start the Blazor app
       run: |
-        dotnet ./publish/YourBlazorApp.dll &
+        dotnet ./publish/Blazor.dll &
         echo "Waiting for Blazor app to start..."
         sleep 30
       env:
