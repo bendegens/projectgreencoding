@@ -36,16 +36,17 @@ jobs:
     - name: Publish the Blazor app
       run: dotnet publish -c Release -o ./publish
 
-    - name: Install Greenframe
-      run: curl https://assets.greenframe.io/install.sh | bash
-
     - name: Start the Blazor app
       run: |
         dotnet ./publish/YourBlazorApp.dll &
         echo "Waiting for Blazor app to start..."
-        sleep 30 # Adjust the delay as needed to ensure the app is running
+        sleep 30
+        curl -v http://localhost:5000
       env:
         ASPNETCORE_URLS: "http://localhost:5000" # Ensure your app starts on this URL
+        
+    - name: Install Greenframe
+      run: curl https://assets.greenframe.io/install.sh | bash
 
     - name: Analyze with Greenframe
       run: greenframe analyze http://localhost:5000
