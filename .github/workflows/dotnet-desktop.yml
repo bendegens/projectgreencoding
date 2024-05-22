@@ -58,11 +58,8 @@ jobs:
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
 
-    - name: Install chromium
-      run: sudo apt-get install chromium-browser
-
     - name: Analyze with Greenframe
-      run: greenframe open https://localhost:5000/ ./scenario-weather.js
+      run: greenframe analyze https://localhost:5000/ ./scenario-weather.js
       env:
         GREENFRAME_SECRET_TOKEN: ${{ secrets.GREENFRAME_SECRET_TOKEN }}
 
