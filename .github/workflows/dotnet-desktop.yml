@@ -38,7 +38,6 @@ jobs:
       run: |
         nohup dotnet ./publish/Blazor.dll > blazor_app.log 2>&1 &
         echo "Waiting for Blazor app to start..."
-        sleep 30 # Adjust this if needed
       env:
         ASPNETCORE_URLS: "http://localhost:5000" # Ensure your app starts on this URL
 
@@ -56,10 +55,6 @@ jobs:
     - name: Check listening ports
       run: netstat -tuln
 
-    - name: Get Host IP Address
-      id: host-ip
-      run: echo "HOST_IP=$(ip route get 1 | awk '{print $NF;exit}')" >> $GITHUB_ENV
-    
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
 
@@ -67,8 +62,6 @@ jobs:
       run: greenframe analyze
       env:
         GREENFRAME_SECRET_TOKEN: ${{ secrets.GREENFRAME_SECRET_TOKEN }}
-        HOST_IP: ${{ steps.host-ip.outputs.ip }}
-        GREENFRAME_BASE_URL: "http://${{ steps.host-ip.outputs.ip }}:5000"
 
     - name: Upload Greenframe results
       uses: actions/upload-artifact@v2
