@@ -36,16 +36,14 @@ jobs:
     - name: Publish the Blazor app
       run: dotnet publish -c Release -o ./publish
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
 
     - name: Start the Blazor app
-      run: dotnet ./publish/YourBlazorApp.dll &
+      run: |
+        dotnet ./publish/YourBlazorApp.dll &
+        echo "Waiting for Blazor app to start..."
+        sleep 30 # Adjust the delay as needed to ensure the app is running
       env:
         ASPNETCORE_URLS: "http://localhost:5000" # Ensure your app starts on this URL
 
@@ -54,7 +52,11 @@ jobs:
       env:
         GREENFRAME_SECRET_TOKEN: ${{ secrets.GREENFRAME_SECRET_TOKEN }} # Make sure to add your Greenframe API key in GitHub secrets
 
-
+    - name: Upload Greenframe results
+      uses: actions/upload-artifact@v2
+      with:
+        name: greenframe-results
+        path: greenframe-results/
 
    # - name: Install Greenframe
    #   run: npm install -g @greenframe/cli
