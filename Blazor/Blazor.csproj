@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Update="wwwroot\GreenFrame\weather\greenframe-confirm-file.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\image.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

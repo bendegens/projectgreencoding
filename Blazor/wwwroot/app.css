@@ -1,11 +1,11 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #262626;
-    color: white;
+    /*background-color: #262626;
+    color: white;*/
 }
 
 .top-row {
-    background-color: black !important;
+    background-color: rgba(0,0,0,0.4) !important;
 }
 
 a, .btn-link {

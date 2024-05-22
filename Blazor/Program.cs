@@ -19,7 +19,30 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseRouting();
+
+app.MapGet("/{path}/greenframe-confirm-file.txt", async (context) =>
+{
+    var path = context.Request.RouteValues["path"]?.ToString();
+    var filePath = Path.Combine(app.Environment.WebRootPath, "GreenFrame", path, "greenframe-confirm-file.txt");
+
+    if (File.Exists(filePath))
+    {
+        var fileContent = await File.ReadAllTextAsync(filePath);
+        context.Response.ContentType = "text/plain";
+        await context.Response.WriteAsync(fileContent);
+    }
+    else
+    {
+        context.Response.StatusCode = 404;
+        await context.Response.WriteAsync("File not found.");
+    }
+});
+
 app.UseAntiforgery();
+
+app.MapBlazorHub();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
