@@ -53,7 +53,7 @@ jobs:
       run: curl https://assets.greenframe.io/install.sh | bash
 
     - name: Analyze with Greenframe
-      run: greenframe analyze
+      uses: marmelab/greenframe-action@1.0.0
       env:
         GREENFRAME_SECRET_TOKEN: ${{ secrets.GREENFRAME_SECRET_TOKEN }}
 
