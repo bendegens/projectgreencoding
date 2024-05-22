@@ -53,7 +53,7 @@ jobs:
       run: curl https://assets.greenframe.io/install.sh | bash
 
     - name: Analyze with Greenframe
-      run: greenframe analyze https://localhost:5000/ ./scenario-weather.js
+      run: greenframe analyze
       env:
         GREENFRAME_SECRET_TOKEN: ${{ secrets.GREENFRAME_SECRET_TOKEN }}
 
