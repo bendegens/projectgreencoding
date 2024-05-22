@@ -15,17 +15,6 @@ jobs:
     env:
       Solution_Name: GreenCoding.sln   
                       
-    services:
-      selenium:
-        image: selenium/standalone-chrome
-        ports:
-          - 4444:4444
-        options: >-
-          --health-cmd "curl -f http://localhost:4444/wd/hub/status || exit 1"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 20
-          
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -53,12 +42,27 @@ jobs:
         node-version: '16'
 
     - name: Install Greenframe
-      run: npm install -g @greenframe/cli
+      run: curl https://assets.greenframe.io/install.sh | bash
+
+    - name: Start the Blazor app
+      run: dotnet ./publish/YourBlazorApp.dll &
+      env:
+        ASPNETCORE_URLS: "http://localhost:5000" # Ensure your app starts on this URL
 
     - name: Analyze with Greenframe
-      run: greenframe analyze
+      run: greenframe analyze http://localhost:5000
       env:
-         GREENFRAME_SECRET_TOKEN: ${{secrets.GREENFRAME_SECRET_TOKEN}}
+        GREENFRAME_SECRET_TOKEN: ${{ secrets.GREENFRAME_SECRET_TOKEN }} # Make sure to add your Greenframe API key in GitHub secrets
+
+
+
+   # - name: Install Greenframe
+   #   run: npm install -g @greenframe/cli
+
+   # - name: Analyze with Greenframe
+   #   run: greenframe analyze
+   #   env:
+   #      GREENFRAME_SECRET_TOKEN: ${{secrets.GREENFRAME_SECRET_TOKEN}}
 
    # - run: curl https://assets.greenframe.io/install.sh | bash
 
