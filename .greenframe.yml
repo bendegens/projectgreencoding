@@ -1,7 +1,2 @@
 baseURL: ${GREENFRAME_BASE_URL}
 projectName: projectgreencoding
-scenarios:
-    - name: Main Scenario
-      steps:
-        - action: navigate
-          url: /
