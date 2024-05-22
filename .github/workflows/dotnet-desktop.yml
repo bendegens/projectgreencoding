@@ -9,19 +9,20 @@ on:
 jobs:
 
   greenframeci:
-
     runs-on: ubuntu-latest
 
     env:
       Solution_Name: GreenCoding.sln   
-                      
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    # Install the .NET Core workload
+    - name: Setup Docker
+      uses: docker/setup-buildx-action@v1
+
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
@@ -32,22 +33,34 @@ jobs:
 
     - name: Build
       run: dotnet build --no-restore
-      
+
     - name: Publish the Blazor app
       run: dotnet publish -c Release -o ./publish
 
     - name: Start the Blazor app
       run: |
-        dotnet ./publish/Blazor.dll &
+        nohup dotnet ./publish/Blazor.dll > blazor_app.log 2>&1 &
         echo "Waiting for Blazor app to start..."
+        sleep 30 # Adjust the delay as needed to ensure the app is running
       env:
         ASPNETCORE_URLS: "http://localhost:5000" # Ensure your app starts on this URL
-          
+
+    - name: Check if Blazor app is running
+      run: |
+        for i in {1..10}; do
+          curl -v http://localhost:5000 && break
+          echo "Blazor app is not up yet. Retrying in 5 seconds..."
+          sleep 5
+        done
+
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
 
     - name: Analyze with Greenframe
-      run: greenframe analyze http://localhost:5000
+      run: |
+        docker run --rm --network host -e GREENFRAME_SECRET_TOKEN=${{ secrets.GREENFRAME_SECRET_TOKEN }} \
+        -v $(pwd)/greenframe-results:/app/results \
+        greenframe/greenframe analyze http://localhost:5000
       env:
         GREENFRAME_SECRET_TOKEN: ${{ secrets.GREENFRAME_SECRET_TOKEN }} # Make sure to add your Greenframe API key in GitHub secrets
 
@@ -56,18 +69,3 @@ jobs:
       with:
         name: greenframe-results
         path: greenframe-results/
-
-   # - name: Install Greenframe
-   #   run: npm install -g @greenframe/cli
-
-   # - name: Analyze with Greenframe
-   #   run: greenframe analyze
-   #   env:
-   #      GREENFRAME_SECRET_TOKEN: ${{secrets.GREENFRAME_SECRET_TOKEN}}
-
-   # - run: curl https://assets.greenframe.io/install.sh | bash
-
-   # - run: greenframe analyze
-   #   env:
-   #     baseURL: http://localhost:8080
-   #     GREENFRAME_SECRET_TOKEN: ${{secrets.GREENFRAME_SECRET_TOKEN}}
