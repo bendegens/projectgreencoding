@@ -58,7 +58,7 @@ jobs:
 
     - name: Get Host IP Address
       id: host-ip
-      run: echo "Host IP Address: $(/sbin/ip route | awk '/default/ { print $3 }')"
+      run: echo "HOST_IP=$(ip route get 1 | awk '{print $NF;exit}')" >> $GITHUB_ENV
     
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
