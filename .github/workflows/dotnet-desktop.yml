@@ -9,19 +9,17 @@ on:
 jobs:
 
   greenframeci:
-
     runs-on: ubuntu-latest
 
     env:
       Solution_Name: GreenCoding.sln   
-                      
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    # Install the .NET Core workload
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
@@ -32,14 +30,15 @@ jobs:
 
     - name: Build
       run: dotnet build --no-restore
-      
+
     - name: Publish the Blazor app
       run: dotnet publish -c Release -o ./publish
 
     - name: Start the Blazor app
       run: |
-        dotnet ./publish/Blazor.dll &
+        nohup dotnet ./publish/Blazor.dll > blazor_app.log 2>&1 &
         echo "Waiting for Blazor app to start..."
+        sleep 30 # Adjust this if needed
       env:
         ASPNETCORE_URLS: "http://localhost:5000" # Ensure your app starts on this URL
 
@@ -53,6 +52,9 @@ jobs:
 
     - name: Print Blazor log
       run: cat blazor_app.log
+
+    - name: Check listening ports
+      run: netstat -tuln
 
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
