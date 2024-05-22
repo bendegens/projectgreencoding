@@ -40,17 +40,8 @@ jobs:
       run: |
         dotnet ./publish/Blazor.dll &
         echo "Waiting for Blazor app to start..."
-        sleep 30
       env:
         ASPNETCORE_URLS: "http://localhost:5000" # Ensure your app starts on this URL
-
-    - name: Check if Blazor app is running
-      run: |
-        for i in {1..10}; do
-          curl -v http://localhost:5000 && break
-          echo "Blazor app is not up yet. Retrying in 10 seconds..."
-          sleep 10
-        done
           
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
