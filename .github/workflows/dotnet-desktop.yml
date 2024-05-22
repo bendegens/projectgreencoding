@@ -58,15 +58,6 @@ jobs:
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
 
-
-    - name: Get Host IP Address
-      id: host-ip
-      run: echo "HOST_IP=$(ip route get 1 | awk '{print $NF;exit}')" >> $GITHUB_ENV
-
-    - name: Update /etc/hosts for Docker
-      run: |
-        echo "${{ env.HOST_IP }} host.docker.internal" | sudo tee -a /etc/hosts
-        
     - name: Analyze with Greenframe
       run: greenframe analyze
       env:
