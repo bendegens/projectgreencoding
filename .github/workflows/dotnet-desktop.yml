@@ -50,7 +50,10 @@ jobs:
           echo "Blazor app is not up yet. Retrying in 5 seconds..."
           sleep 5
         done
-      
+
+    - name: Print Blazor log
+      run: cat blazor_app.log
+
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
 
