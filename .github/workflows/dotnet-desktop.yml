@@ -79,8 +79,6 @@ jobs:
 
     - name: Analyze with Greenframe
       run: greenframe analyze
-      with:
-        continue-on-error: true
       env:
         GREENFRAME_SECRET_TOKEN: ${{ secrets.GREENFRAME_SECRET_TOKEN }}
     
