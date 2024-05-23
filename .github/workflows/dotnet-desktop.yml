@@ -15,10 +15,22 @@ jobs:
       Solution_Name: GreenCoding.sln   
 
     steps:
+    - name: Initialize Energy Estimation
+      uses: green-coding-solutions/eco-ci-energy-estimation@v3 # use hash or @vX here (See note below)
+      with:
+        task: start-measurement
+        # continue-on-error: true # recommended setting for production. See notes below.
+
     - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
+    - name: Measurement - Checkout Repo 
+      uses: green-coding-solutions/eco-ci-energy-estimation@v3 # use hash or @vX here (See note below)
+      with:
+        task: get-measurement
+        label: 'repo checkout'
 
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
@@ -33,6 +45,13 @@ jobs:
 
     - name: Publish the Blazor app
       run: dotnet publish -c Release -o ./publish
+
+
+    - name: Measurement - Restore build publish 
+      uses: green-coding-solutions/eco-ci-energy-estimation@v3 # use hash or @vX here (See note below)
+      with:
+        task: get-measurement
+        label: 'restore build publish'
 
     - name: Start the Blazor app
       run: |
@@ -49,13 +68,32 @@ jobs:
           sleep 5
         done
 
+    - name: Measurement - starting the app 
+      uses: green-coding-solutions/eco-ci-energy-estimation@v3 # use hash or @vX here (See note below)
+      with:
+        task: get-measurement
+        label: 'starting the app'
+
     - name: Install Greenframe
       run: curl https://assets.greenframe.io/install.sh | bash
 
     - name: Analyze with Greenframe
       run: greenframe analyze
+      with:
+        continue-on-error: true
       env:
         GREENFRAME_SECRET_TOKEN: ${{ secrets.GREENFRAME_SECRET_TOKEN }}
+    
+    - name: Measurement - greenframe analytics 
+      uses: green-coding-solutions/eco-ci-energy-estimation@v3 # use hash or @vX here (See note below)
+      with:
+        task: get-measurement
+        label: 'greenframe analytics '
+
+    - name: Show Energy Results
+      uses: green-coding-solutions/eco-ci-energy-estimation@v3 # use hash or @vX here (See note below)
+      with:
+        task: display-results
 
     - name: Upload Greenframe results
       uses: actions/upload-artifact@v2
